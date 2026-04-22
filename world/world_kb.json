@@ -1,0 +1,130 @@
+{
+  "meta": {
+    "title": "Deep Space Echo",
+    "genre": "Sci-fi mystery",
+    "opening": "You are Federation Investigator K-09. Seventy-two hours ago, Deep Space Research Station Orion-7 lost all contact with ground control. Your mission: board the station, investigate, come back alive.\n\nThe airlock door seals slowly behind you. Inside the station, the emergency lights pulse a dim red —\n\nWhat do you do?"
+  },
+
+  "locations": [
+    {
+      "id": "loc_airlock",
+      "name": "Airlock",
+      "description": "The main entrance to Orion-7. Two heavy airlock doors, inner and outer, with a yellowed safety manual taped to the wall. A dark drag-mark stretches along the floor toward the main corridor.",
+      "tags": ["entrance", "safe zone"]
+    },
+    {
+      "id": "loc_corridor",
+      "name": "Main Corridor",
+      "description": "The central passage connecting all functional compartments. The emergency lights flicker intermittently; the gravity system is unstable, with occasional brief weightlessness.",
+      "tags": ["passage"]
+    },
+    {
+      "id": "loc_control",
+      "name": "Control Room",
+      "description": "The brain of the station. The holographic console is still active, Station Chief Mira's terminal is still lit, and the last log entry is frozen at 72 hours ago.",
+      "tags": ["key location", "has clue"]
+    },
+    {
+      "id": "loc_hydroponics",
+      "name": "Hydroponics Bay",
+      "description": "Originally used for oxygen and food production. Now vines grow abnormally, covering most of the walls. A cloying, sweet odor of rot hangs in the air.",
+      "tags": ["danger zone", "anomalous"]
+    },
+    {
+      "id": "loc_engine",
+      "name": "Engine Room",
+      "description": "The reactor control area. A sustained low-frequency hum fills the space, and unexplained dragging sounds occasionally come from the ventilation ducts. Slightly warmer than other areas.",
+      "tags": ["danger zone", "key location"]
+    },
+    {
+      "id": "loc_lab",
+      "name": "Research Lab",
+      "description": "A biological-sample laboratory. Most of the glass incubation chambers are shattered. A scattered experiment notebook mentions 'the consciousness-diffusion phenomenon of specimen M-7'.",
+      "tags": ["key location", "has clue"]
+    }
+  ],
+
+  "characters": [
+    {
+      "id": "char_mira",
+      "name": "Mira Chen",
+      "description": "Chief of Orion-7, age 42, former deep-space biologist. Her final log reveals she had ethical doubts about the research on 'specimen M-7' and planned to report it to headquarters.",
+      "tags": ["missing", "station chief"]
+    },
+    {
+      "id": "char_raj",
+      "name": "Raj Patel",
+      "description": "Chief engineer. Logs repeatedly mention anomalies in the engine room. His quarters are locked from the inside, and faint tapping sounds come from within.",
+      "tags": ["missing", "possibly alive"]
+    },
+    {
+      "id": "char_eva",
+      "name": "Eva",
+      "description": "The station's AI assistant. Still operating, but her answers now contain illogical pauses. She falls silent on certain questions (especially about specimen M-7).",
+      "tags": ["AI", "interactable"]
+    },
+    {
+      "id": "char_unknown",
+      "name": "Unknown Entity",
+      "description": "A presence in the ventilation shafts. No stable form — appears to have emerged from the diffusion of specimen M-7. Sensitive to light and sound.",
+      "tags": ["hostile", "unknown"]
+    }
+  ],
+
+  "factions": [
+    {
+      "id": "fac_federation",
+      "name": "Federation Bureau of Investigation",
+      "description": "The player's organization. Wants to uncover the truth, but may also suppress information. The mission comes with strict time limits.",
+      "tags": ["player side"]
+    },
+    {
+      "id": "fac_corp",
+      "name": "Helios Biotech Group",
+      "description": "Orion-7's funding sponsor. Has a strong interest in the commercial value of specimen M-7 and may have dispatched its own recovery team.",
+      "tags": ["hidden faction"]
+    }
+  ],
+
+  "items": [
+    {
+      "id": "item_idcard",
+      "name": "Mira's ID Card",
+      "description": "ID card picked up in the control room. Dead but with an intact chip. Unlocks the research lab and Mira's personal terminal.",
+      "tags": ["key item"]
+    },
+    {
+      "id": "item_flashlight",
+      "name": "Tactical Flashlight",
+      "description": "The player's starting equipment. Its high-intensity beam repels the unknown entity, but battery life is limited.",
+      "tags": ["equipment"]
+    },
+    {
+      "id": "item_log",
+      "name": "Experiment Notebook",
+      "description": "A handwritten journal. The last page reads: 'M-7 is starting to respond to thought. This isn't right.'",
+      "tags": ["clue"]
+    }
+  ],
+
+  "rules": [
+    {
+      "id": "rule_timer",
+      "name": "Time Pressure",
+      "description": "Every 10 in-game turns, the station's life-support system drops by one level. After level 4, the air runs out and the game ends.",
+      "tags": ["core mechanic"]
+    },
+    {
+      "id": "rule_light",
+      "name": "Light Defense",
+      "description": "The unknown entity retreats in bright light. The flashlight can briefly drive it off, but drains battery.",
+      "tags": ["combat mechanic"]
+    },
+    {
+      "id": "rule_truth",
+      "name": "Three Truths",
+      "description": "The game has three possible endings: (1) bring the specimen back to the Federation, (2) destroy the specimen, (3) make a deal with Helios. The player's key choices determine which ending plays out.",
+      "tags": ["core mechanic", "ending"]
+    }
+  ]
+}

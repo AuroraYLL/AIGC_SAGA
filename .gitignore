@@ -1,0 +1,15 @@
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.venv/
+venv/
+
+# Evaluation outputs
+eval_output_*.json
+eval_report_*.md
+
+# Cached embeddings
+*.faiss
+.cache/
