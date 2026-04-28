@@ -21,6 +21,12 @@ CATEGORIES = ["locations", "characters", "factions", "items", "rules"]
 class WorldKB:
     def __init__(self, json_path: str = None):
         path = json_path or CONFIG.WORLD_KB_PATH
+        if not CONFIG.USE_RAG or not Path(path).exists():
+            print("[WorldKB] USE_RAG=false or world file missing, entering mock mode.")
+            self.store = None
+            self.data = None
+            self.meta = {}
+            return
         self.data = json.loads(Path(path).read_text(encoding="utf-8"))
         self.meta = self.data.get("meta", {})
         self.store = VectorStore()
@@ -51,15 +57,21 @@ class WorldKB:
         print(f"[WorldKB] Indexed {len(texts)} world-knowledge entries.")
 
     def retrieve(self, query: str, k: int = 3):
+        if self.store is None:
+            return []
         return self.store.search(query, k=k)
 
     def retrieve_as_text(self, query: str, k: int = 3) -> str:
         """Formatted output for use in a prompt."""
+        if self.store is None:
+            return "【假世界观】这里是气闸舱，有一扇红色的门。远处的控制台闪烁着微弱的蓝光。"
+        
         hits = self.store.search(query, k=k)
         if not hits:
             return ""
         lines = [f"- {text}" for text, _meta, _score in hits]
         return "\n".join(lines)
+
 
     def get_opening(self) -> str:
         """Return the world's opening paragraph; shown at the start of the game."""
