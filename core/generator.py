@@ -10,12 +10,11 @@ Pipeline:
   user input → [RAG retrieval] → [Memory concat] → Prompt → LLM → parse → [update Memory] → return
   Steps in [] can be disabled via ablation flags.
 """
-import json
 from dataclasses import dataclass, field
 from typing import Any, Dict, List
 
 from config import CONFIG
-from core.llm import call_llm
+from core.llm import call_llm, safe_parse_json
 from core.prompts import build_system_prompt
 
 
@@ -98,16 +97,62 @@ class StoryEngine:
     @staticmethod
     def _parse_result(raw: str) -> GenerateResult:
         """Parse the LLM's JSON-string response into a GenerateResult, with fallback."""
-        try:
-            data = json.loads(raw)
-        except (json.JSONDecodeError, TypeError):
+        data = safe_parse_json(raw)
+        if not isinstance(data, dict) or not data:
             # Fallback: treat the raw text as the description, no choices.
-            return GenerateResult(text=raw or "(System error: no response)", choices=[], state_delta={})
+            return GenerateResult(
+                text=str(raw or "(System error: no response)"),
+                choices=[],
+                state_delta={
+                    "location": "",
+                    "hp_change": 0,
+                    "items_gained": [],
+                    "items_lost": [],
+                },
+            )
+
+        text = str(data.get("text", "")).strip() or str(raw or "(System error: no response)")
+
+        raw_choices = data.get("choices", [])
+        choices: List[str] = []
+        if isinstance(raw_choices, list):
+            for c in raw_choices:
+                c_text = str(c).strip()
+                if c_text:
+                    choices.append(c_text)
+        choices = choices[:3]
+
+        raw_delta = data.get("state_delta", {})
+        if not isinstance(raw_delta, dict):
+            raw_delta = {}
+
+        location = str(raw_delta.get("location", "")).strip()
+        try:
+            hp_change = int(raw_delta.get("hp_change", 0))
+        except (TypeError, ValueError):
+            hp_change = 0
+
+        def _as_string_list(value) -> List[str]:
+            if not isinstance(value, list):
+                return []
+            out: List[str] = []
+            for item in value:
+                item_text = str(item).strip()
+                if item_text:
+                    out.append(item_text)
+            return out
+
+        state_delta = {
+            "location": location,
+            "hp_change": hp_change,
+            "items_gained": _as_string_list(raw_delta.get("items_gained", [])),
+            "items_lost": _as_string_list(raw_delta.get("items_lost", [])),
+        }
 
         return GenerateResult(
-            text=str(data.get("text", "")),
-            choices=list(data.get("choices", [])),
-            state_delta=dict(data.get("state_delta", {})),
+            text=text,
+            choices=choices,
+            state_delta=state_delta,
         )
 
     # ========== Helper methods ==========
